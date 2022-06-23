@@ -60,6 +60,7 @@ if __name__ == "__main__":
     print("Aca empieza")
     print(CANT_PRUEBA)
     for _ in range(CANT_PRUEBA):
+        #tironeo
         tirador.tirar_mal_tironeo(min_ancho=0, max_alto=28, min_alto=0, max_ancho=24)
         prueba = tirador.get_datos()
         print(tirador.blancos_usados)
