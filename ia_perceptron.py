@@ -13,24 +13,37 @@ if __name__ == "__main__":
     clasificacion = []
     CANT_DATOS = 75000
     # Creamos CANT_DATOS muestras mitad aprobadas y mitad desaprobadas
-    for _ in range(CANT_DATOS // 2):
+    i = 0
+    for _ in range(CANT_DATOS // 6):
         tirador.tirar(min_ancho=0, max_ancho=6, min_alto=0, max_alto=6)
-        clasificacion.append(1) # Lo clasificamos como 1 "Aprobado"
-        tirador.tirar_mal(min_ancho=0, max_ancho=24, min_alto=0, max_alto=28)
-        clasificacion.append(0) # Lo clasificamos como 0 "Desaprobado"
+        clasificacion.append(0) # Lo clasificamos como 1 "Aprobado"
+
+        tirador.tirar_mal_error_punteria(min_ancho=0, max_ancho=24, min_alto=0, max_alto=28)
+        clasificacion.append(1)  # Lo clasificamos como 0 "Desaprobado"
+        tirador.tirar_mal_tironeo(min_ancho=0, max_ancho=24, min_alto=0, max_alto=28)
+        clasificacion.append(2)  # Lo clasificamos como 0 "Desaprobado"
+        tirador.tirar_mal_control_respiracion(min_ancho=0, max_ancho=24, min_alto=0, max_alto=28)
+        clasificacion.append(3)  # Lo clasificamos como 0 "Desaprobado"
+        tirador.tirar_mal_posicion_inestable(min_ancho=0, max_ancho=24, min_alto=0, max_alto=28)
+        clasificacion.append(4)  # Lo clasificamos como 0 "Desaprobado"
+        tirador.tirar_mal_deficiente_instruccion(min_ancho=0, max_ancho=24, min_alto=0, max_alto=28)
+        clasificacion.append(5)  # Lo clasificamos como 0 "Desaprobado"
+        i = i+1
+        print(i)
 
     # Metemos los datos en numpy arrays y los acomodamos
     matriz_datos = np.array(tirador.get_datos(), dtype=float)
     matriz_clasificacion = np.array(clasificacion, dtype=float)
     # Aplanamos los datos
     matriz_datos= matriz_datos.reshape(CANT_DATOS, 28 * 24)
-
+    print('matriz')
     # Creamos el perceptron y lo entrenamos
     inicio = time.time()
     clf = MLPClassifier(solver='adam', activation="tanh",max_iter=400, random_state=1,
                         hidden_layer_sizes=(672//6,672//9,672//12), verbose=True)
     clf = clf.fit(matriz_datos, matriz_clasificacion)
     tirador.descartar_blancos()
+    print('se guardo')
     # Prueba de prediccion de buen desempeño
     CANT_PRUEBA = 100
     # Hago 10 Blancos aprobados
@@ -47,11 +60,9 @@ if __name__ == "__main__":
     print("Aca empieza")
     print(CANT_PRUEBA)
     for _ in range(CANT_PRUEBA):
-        tirador.tirar_mal(max_alto=28, max_ancho=24)
+        tirador.tirar_mal_tironeo(min_ancho=0, max_alto=28, min_alto=0, max_ancho=24)
         prueba = tirador.get_datos()
         print(tirador.blancos_usados)
-    print(CANT_PRUEBA)
-    print("Aca termina")
     matriz_prueba = np.array(prueba, dtype=float)
     matriz_prueba = matriz_prueba.reshape(CANT_PRUEBA, 28 * 24)
     print(f'Acertó {CANT_PRUEBA - clf.predict(matriz_prueba).sum()} de {CANT_PRUEBA} blancos desaprobados.')

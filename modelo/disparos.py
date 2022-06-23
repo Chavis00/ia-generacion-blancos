@@ -55,15 +55,43 @@ class Impactos(list):
         self.max_alto = min_alto
         area = 0.0
 
-        while area <= area_deseada:
+        diferencia_horizontal_tanda1 = 0
+        diferencia_vertical_tanda1 = 0
 
+        diferencia_horizontal_tanda2 = 0
+        diferencia_vertical_tanda2 = 0
+
+
+        centros = 3
+        while area <= area_deseada:
+            diferencias = True
             self.clear()
-            self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho,min_alto=min_alto, max_alto=max_alto)
-            self.calcular_distancia_centros()
-            a = self.calcular_distancia_vertical()
+            self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto, max_alto=max_alto)
+            while centros>=4:
+                self.clear()
+                self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto, max_alto=max_alto)
+                centros = self.calcular_distancia_centros()
+
+                while diferencias:
+                    self.clear()
+                    self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto, max_alto=max_alto)
+                    horizontal = self.calcular_distancia_horizontal()
+                    diferencia_horizontal_tanda1 = horizontal[0]
+                    diferencia_horizontal_tanda2 = horizontal[1]
+                    vertical = self.calcular_distancia_vertical()
+                    diferencia_vertical_tanda1 =vertical[0]
+                    diferencia_vertical_tanda2 = vertical[1]
+                    if(diferencia_horizontal_tanda1 < 6 and
+                        diferencia_horizontal_tanda2 < 6 and
+                        diferencia_vertical_tanda1 < 6 and
+                        diferencia_vertical_tanda2 < 6
+                    ):
+                        diferencias = False
+
+
             area = max(self.calcular_superficies())
-        print('area2:',area)
-        print('area_deseada2:', area_deseada)
+
+
 
     def generar_dispersos_errores(self, min_ancho, max_ancho,min_alto, max_alto, error, area_deseada = 12.5):
         """Garantiza que al menos uno de los dos triangulos generados tiene un área superiror a la
@@ -75,47 +103,184 @@ class Impactos(list):
         area = 0.0
 
         if error == 'error_punteria':
-            distancia = 100
-            diferencia_vertical = 0
-            diferencia_horizontal = 0
-            while distancia > 4:
+            centros = 0
+            area = 0.0
+
+            while area <= area_deseada:
+                diferencias = True
                 self.clear()
                 self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto, max_alto=max_alto)
-                distancia = self.calcular_distancia_centros()
-        elif error == 'mal_tironeo':
-            distancia = 0
-            diferencia_vertical = 0
-            diferencia_horizontal = 0
-            while distancia <4:
+                centros = self.calcular_distancia_centros()
+
+                while centros <= 4:
+                    self.clear()
+                    self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
+                                          max_alto=max_alto)
+                    centros = self.calcular_distancia_centros()
+
+                    while diferencias:
+                        self.clear()
+                        self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
+                                              max_alto=max_alto)
+                        horizontal = self.calcular_distancia_horizontal()
+                        diferencia_horizontal_tanda1 = horizontal[0]
+                        diferencia_horizontal_tanda2 = horizontal[1]
+                        vertical = self.calcular_distancia_vertical()
+                        diferencia_vertical_tanda1 = vertical[0]
+                        diferencia_vertical_tanda2 = vertical[1]
+
+                        if ((diferencia_horizontal_tanda1 <= 6 or
+                                diferencia_horizontal_tanda2 <= 6) and
+                                (diferencia_vertical_tanda1 <= 6 or
+                                diferencia_vertical_tanda2 <= 6)
+                        ):
+                            diferencias = False
+
+                area = max(self.calcular_superficies())
+
+
+        elif error == 'tironeo':
+
+            diferencias = True
+            centros = 100
+
+            while centros >= 4:
                 self.clear()
-                self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto, max_alto=max_alto)
-                distancia = self.calcular_distancia_centros()
-            pass
+                self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
+                                          max_alto=max_alto)
+                centros = self.calcular_distancia_centros()
+
+                while diferencias:
+                    self.clear()
+                    self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
+                                              max_alto=max_alto)
+                    horizontal = self.calcular_distancia_horizontal()
+                    diferencia_horizontal_tanda1 = horizontal[0]
+                    diferencia_horizontal_tanda2 = horizontal[1]
+                    vertical = self.calcular_distancia_vertical()
+                    diferencia_vertical_tanda1 = vertical[0]
+                    diferencia_vertical_tanda2 = vertical[1]
+
+                    if ((diferencia_horizontal_tanda1 >= 6 or
+                        diferencia_horizontal_tanda2 >= 6) and
+                        (diferencia_vertical_tanda1 >= 6 or
+                        diferencia_vertical_tanda2 >= 6)
+                    ):
+                        diferencias = False
+
+
+
         elif error == 'control_respiracion':
-            distancia = 100
-            diferencia_vertical = 0
-            diferencia_horizontal = 0
-            while distancia > 4:
+            centros = 100
+            diferencias = True
+
+            while centros >= 4:
                 self.clear()
-                self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto, max_alto=max_alto)
-                distancia = self.calcular_distancia_centros()
+                self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
+                                      max_alto=max_alto)
+                centros = self.calcular_distancia_centros()
+
+                while diferencias:
+                    self.clear()
+                    self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
+                                          max_alto=max_alto)
+                    horizontal = self.calcular_distancia_horizontal()
+                    diferencia_horizontal_tanda1 = horizontal[0]
+                    diferencia_horizontal_tanda2 = horizontal[1]
+                    vertical = self.calcular_distancia_vertical()
+                    diferencia_vertical_tanda1 = vertical[0]
+                    diferencia_vertical_tanda2 = vertical[1]
+
+                    if ((diferencia_horizontal_tanda1 < 6 and
+                         diferencia_vertical_tanda1 > 6 and
+                         diferencia_horizontal_tanda2 < 6 and
+                         diferencia_vertical_tanda2 < 6)
+                            or
+                        (diferencia_horizontal_tanda1 < 6 and
+                         diferencia_vertical_tanda1 < 6 and
+                         diferencia_horizontal_tanda2 < 6 and
+                         diferencia_vertical_tanda2 > 6)
+                            or
+                        (diferencia_horizontal_tanda1 < 6 and
+                        diferencia_vertical_tanda1 > 6 and
+                        diferencia_horizontal_tanda2 < 6 and
+                        diferencia_vertical_tanda2 > 6)
+                    ):
+                        diferencias = False
+
+
+
+
         elif error == 'posicion_inestable':
-            distancia = 100
-            diferencia_vertical = 0
-            diferencia_horizontal = 0
-            while distancia > 4:
+            centros = 100
+            diferencias = True
+
+            while centros >= 4:
                 self.clear()
-                self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto, max_alto=max_alto)
-                distancia = self.calcular_distancia_centros()
+                self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
+                                      max_alto=max_alto)
+                centros = self.calcular_distancia_centros()
+
+                while diferencias:
+                    self.clear()
+                    self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
+                                          max_alto=max_alto)
+                    horizontal = self.calcular_distancia_horizontal()
+                    diferencia_horizontal_tanda1 = horizontal[0]
+                    diferencia_horizontal_tanda2 = horizontal[1]
+                    vertical = self.calcular_distancia_vertical()
+                    diferencia_vertical_tanda1 = vertical[0]
+                    diferencia_vertical_tanda2 = vertical[1]
+
+                    if ((diferencia_horizontal_tanda1 > 6 and
+                         diferencia_vertical_tanda1 < 6 and
+                         diferencia_horizontal_tanda2 < 6 and
+                         diferencia_vertical_tanda2 < 6)
+                            or
+                        (diferencia_horizontal_tanda1 < 6 and
+                         diferencia_vertical_tanda1 < 6 and
+                         diferencia_horizontal_tanda2 > 6 and
+                         diferencia_vertical_tanda2 < 6)
+                            or
+                        (diferencia_horizontal_tanda1 > 6 and
+                        diferencia_vertical_tanda1 < 6 and
+                        diferencia_horizontal_tanda2 > 6 and
+                        diferencia_vertical_tanda2 < 6)
+                    ):
+                        diferencias = False
+
+
+
         elif error == 'deficiente_instruccion':
-            distancia = 0
-            diferencia_vertical = 0
-            diferencia_horizontal = 0
-            while distancia < 4:
+            centros = 0
+            diferencias = True
+
+            while centros <= 4:
                 self.clear()
-                self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto, max_alto=max_alto)
-                distancia = self.calcular_distancia_centros()
-            pass
+                self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
+                                      max_alto=max_alto)
+                centros = self.calcular_distancia_centros()
+
+                while diferencias:
+                    self.clear()
+                    self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
+                                          max_alto=max_alto)
+                    horizontal = self.calcular_distancia_horizontal()
+                    diferencia_horizontal_tanda1 = horizontal[0]
+                    diferencia_horizontal_tanda2 = horizontal[1]
+                    vertical = self.calcular_distancia_vertical()
+                    diferencia_vertical_tanda1 = vertical[0]
+                    diferencia_vertical_tanda2 = vertical[1]
+
+                    if ((diferencia_horizontal_tanda1 > 6 or
+                        diferencia_horizontal_tanda2 > 6) and
+                        (diferencia_vertical_tanda1 > 6 or
+                        diferencia_vertical_tanda2 > 6)
+                    ):
+                        diferencias = False
+
+
+
 
         '''
         while area <= area_deseada:
@@ -168,7 +333,8 @@ class Impactos(list):
         min_x_tanda2 = min(x_tiro1_tanda2, x_tiro2_tanda2, x_tiro3_tanda2)
         diferencia_tanda2 = max_x_tanda2 - min_x_tanda2
 
-        diferencia_horizontal = max(diferencia_tanda1, diferencia_tanda2)
+        diferencia_horizontal = diferencia_tanda1, diferencia_tanda2
+
         return diferencia_horizontal
 
     def calcular_distancia_vertical(self):
@@ -189,7 +355,6 @@ class Impactos(list):
         min_y_tanda1 = min(y_tiro1_tanda1, y_tiro2_tanda1, y_tiro3_tanda1)
 
         diferencia_tanda1 = max_y_tanda1 - min_y_tanda1
-        print(diferencia_tanda1)
 
         tiro1_tanda2 = coord_tanda_2[0]
         y_tiro1_tanda2 = tiro1_tanda2[0]
@@ -203,16 +368,15 @@ class Impactos(list):
         max_y_tanda2 = max(y_tiro1_tanda2, y_tiro2_tanda2, y_tiro3_tanda2)
         min_y_tanda2 = min(y_tiro1_tanda2, y_tiro2_tanda2, y_tiro3_tanda2)
         diferencia_tanda2 = max_y_tanda2 - min_y_tanda2
-        print(diferencia_tanda2)
 
-        diferencia_vertical = max(diferencia_tanda1, diferencia_tanda2)
+        diferencia_vertical = diferencia_tanda1, diferencia_tanda2
+
         return diferencia_vertical
 
     def calcular_distancia_centros(self):
         coordenadas = self.calcular_coordenadas()
         coord_tanda_1 = coordenadas[0]
         coord_tanda_2 = coordenadas[1]
-
         tiro1_tanda1 = coord_tanda_1[0]
         x_tiro1_tanda1 = tiro1_tanda1[0]
         y_tiro1_tanda1 = tiro1_tanda1[1]
@@ -243,10 +407,7 @@ class Impactos(list):
 
         x_centro_tanda2 = (x_tiro1_tanda2 + x_tiro2_tanda2 + x_tiro3_tanda2) / 3
         y_centro_tanda2 = (y_tiro1_tanda2 + y_tiro2_tanda2 + y_tiro3_tanda2) / 3
-        print("1:",x_centro_tanda1)
-        print('2:',x_centro_tanda2)
         distancia = sqrt(pow((x_centro_tanda2-x_centro_tanda1),2) + pow((y_centro_tanda2-y_centro_tanda1),2))
-        print('DISTANCIA:',distancia)
         return distancia
 
     def calcular_superficies(self):
@@ -256,7 +417,6 @@ class Impactos(list):
             tanda = list(filter(lambda d: d.indicador == -1, self))
             coord_tanda_2 = list(map(lambda d: d.posicion, tanda))
 
-            print('coordenada 1:', coord_tanda_1)
 
             tiro1_tanda1 = coord_tanda_1[0]
             x_tiro1_tanda1 = tiro1_tanda1[0]
@@ -312,7 +472,6 @@ if __name__ == "__main__":
     '''
     impactos = Impactos()
     impactos.generar_dispersos(max_ancho=14, max_alto=14)
-    print(impactos)
 
 
 

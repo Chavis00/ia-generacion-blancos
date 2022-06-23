@@ -44,41 +44,41 @@ class Tirador:
         except disparos.ValueTooSmall:
             print("No se puedo ingresar los impactos.")
 
-    def tirar_mal_tironeo(self, max_ancho, max_alto):
+    def tirar_mal_tironeo(self, min_ancho, max_ancho, min_alto, max_alto,):
         blanco = Blanco()
         impactos = Impactos()
         try:
-            impactos.generar_dispersos_errores(max_ancho, max_alto, error='tironeo')
+            impactos.generar_dispersos_errores(min_ancho, max_ancho, min_alto, max_alto, error='tironeo')
             blanco.recibir_impactos(impactos)
             self.blancos_usados.append(blanco)
         except disparos.ValueTooSmall:
             print("No se puedo ingresar los impactos.")
 
-    def tirar_mal_control_respiracion(self, max_ancho, max_alto):
+    def tirar_mal_control_respiracion(self, min_ancho, max_ancho, min_alto, max_alto,):
         blanco = Blanco()
         impactos = Impactos()
         try:
-            impactos.generar_dispersos_errores(max_ancho, max_alto, error='respiracion')
+            impactos.generar_dispersos_errores(min_ancho, max_ancho, min_alto, max_alto, error='control_respiracion')
             blanco.recibir_impactos(impactos)
             self.blancos_usados.append(blanco)
         except disparos.ValueTooSmall:
             print("No se puedo ingresar los impactos.")
 
-    def tirar_mal_posicion_inestable(self, max_ancho, max_alto):
+    def tirar_mal_posicion_inestable(self, min_ancho, max_ancho, min_alto, max_alto,):
         blanco = Blanco()
         impactos = Impactos()
         try:
-            impactos.generar_dispersos_errores(max_ancho, max_alto, error='posicion_inestable')
+            impactos.generar_dispersos_errores(min_ancho, max_ancho, min_alto, max_alto, error='posicion_inestable')
             blanco.recibir_impactos(impactos)
             self.blancos_usados.append(blanco)
         except disparos.ValueTooSmall:
             print("No se puedo ingresar los impactos.")
 
-    def tirar_mal_deficiente_instruccion(self, max_ancho, max_alto):
+    def tirar_mal_deficiente_instruccion(self, min_ancho, max_ancho, min_alto, max_alto,):
         blanco = Blanco()
         impactos = Impactos()
         try:
-            impactos.generar_dispersos_errores(max_ancho, max_alto, error='deficiente_instruccion')
+            impactos.generar_dispersos_errores(min_ancho, max_ancho, min_alto, max_alto, error='deficiente_instruccion')
             blanco.recibir_impactos(impactos)
             self.blancos_usados.append(blanco)
         except disparos.ValueTooSmall:
