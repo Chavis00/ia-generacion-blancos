@@ -64,32 +64,11 @@ class Impactos(list):
 
         centros = 3
         while area <= area_deseada:
-            diferencias = True
             self.clear()
             self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto, max_alto=max_alto)
-            while centros>=4:
-                self.clear()
-                self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto, max_alto=max_alto)
-                centros = self.calcular_distancia_centros()
-
-                while diferencias:
-                    self.clear()
-                    self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto, max_alto=max_alto)
-                    horizontal = self.calcular_distancia_horizontal()
-                    diferencia_horizontal_tanda1 = horizontal[0]
-                    diferencia_horizontal_tanda2 = horizontal[1]
-                    vertical = self.calcular_distancia_vertical()
-                    diferencia_vertical_tanda1 =vertical[0]
-                    diferencia_vertical_tanda2 = vertical[1]
-                    if(diferencia_horizontal_tanda1 < 6 and
-                        diferencia_horizontal_tanda2 < 6 and
-                        diferencia_vertical_tanda1 < 6 and
-                        diferencia_vertical_tanda2 < 6
-                    ):
-                        diferencias = False
-
-
             area = max(self.calcular_superficies())
+
+
 
 
 
