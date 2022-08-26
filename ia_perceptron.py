@@ -1,3 +1,4 @@
+from traceback import print_tb
 from modelo import tirador
 import numpy as np
 from sklearn.neural_network import MLPClassifier
@@ -15,13 +16,17 @@ if __name__ == "__main__":
     CANT_DATOS = 90000
     # Creamos CANT_DATOS muestras mitad aprobadas y mitad desaprobadas
     i = 0
-    for _ in range(CANT_DATOS // 3):
+    for _ in range(CANT_DATOS // 5):
         tirador.tirar(min_ancho=0, max_ancho=6, min_alto=0, max_alto=6)
         clasificacion.append(1) # Lo clasificamos como 1 "Aprobado"
         tirador.tirar_mal_error_punteria(min_ancho=0, max_ancho=24, min_alto=0, max_alto=28)
         clasificacion.append(0)
         tirador.tirar_mal_tironeo(min_ancho=0, max_ancho=24, min_alto=0, max_alto=28)
         clasificacion.append(2)
+        tirador.tirar_mal_control_respiracion(min_ancho=0, max_ancho=24, min_alto=0, max_alto=28)
+        clasificacion.append(3)
+        tirador.tirar_mal_posicion_inestable(min_ancho=0, max_ancho=24, min_alto=0, max_alto=28)
+        clasificacion.append(4)
         # Lo clasificamos como 0 "Desaprobado"
         i = i+1
         print(i)
@@ -35,7 +40,7 @@ if __name__ == "__main__":
     # Creamos el perceptron y lo entrenamos
     inicio = time.time()
     clf = MLPClassifier(solver='adam', activation="tanh",max_iter=400, random_state=1,
-                        hidden_layer_sizes=(672//6,672//9,672//12), verbose=True)
+                        hidden_layer_sizes=(272//6, 272//9, 272//12), verbose=True)
     print('algo')
     clf = clf.fit(matriz_datos, matriz_clasificacion)
     tirador.descartar_blancos()
@@ -48,9 +53,10 @@ if __name__ == "__main__":
         prueba = tirador.get_datos()
     matriz_prueba = np.array(prueba, dtype=float)
     matriz_prueba = matriz_prueba.reshape(CANT_PRUEBA, 28 * 24)
+    print(type(clf.predict(matriz_prueba)))
     print(clf.predict(matriz_prueba))
-
-    print(f'Acertó {clf.predict(matriz_prueba).sum()} de {CANT_PRUEBA} blancos aprobados.')
+    list = clf.predict(matriz_prueba).tolist()
+    print(f'Acertó {list.count(1.0)} de {CANT_PRUEBA} blancos aprobados.')
     tirador.descartar_blancos()
 
 
@@ -66,8 +72,12 @@ if __name__ == "__main__":
     matriz_prueba = np.array(prueba, dtype=float)
     matriz_prueba = matriz_prueba.reshape(CANT_PRUEBA, 28 * 24)
     print(clf.predict(matriz_prueba))
-    print(f'Acertó {CANT_PRUEBA - clf.predict(matriz_prueba).sum()} de {CANT_PRUEBA} blancos desaprobados.')
+    list = clf.predict(matriz_prueba).tolist()    
+    print(f'Acertó {list.count(0.3)}  de {CANT_PRUEBA} blancos desaprobados.')
     tirador.descartar_blancos()
+
+
+
     fin = time.time()
     tiempo_total = fin - inicio
     print(tiempo_total)
