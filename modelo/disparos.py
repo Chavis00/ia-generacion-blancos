@@ -1,6 +1,8 @@
+from cgi import print_form
 from random import sample
 from itertools import product
 from math import sqrt
+from tkinter import HORIZONTAL
 
 
 
@@ -35,7 +37,7 @@ class Impactos(list):
         self.min_ancho = min_ancho
         self.min_alto = min_alto
         if max_ancho * max_alto >= IMPACTOS_TOT:
-            posiciones = sample(list(product(range(max_ancho), range(max_alto))), k=IMPACTOS_TOT)
+            posiciones = sample(list(product(range(min_ancho, max_ancho), range(min_alto, max_alto))), k=IMPACTOS_TOT)
             for pos in posiciones[:DISPAROS_SERIE]:
                 self.append(Disparo(posicion=pos,indicador=1))
 
@@ -83,38 +85,32 @@ class Impactos(list):
 
         if error == 'error_punteria':
             centros = 0
-            area = 0.0
+            area = 0.0 
 
-            while area <= area_deseada:
+            while area < area_deseada and centros < 4:
                 diferencias = True
                 self.clear()
                 self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto, max_alto=max_alto)
-                centros = self.calcular_distancia_centros()
-
-                while centros <= 4:
+                
+                while area > area_deseada and centros > 4:
                     self.clear()
                     self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
                                           max_alto=max_alto)
                     centros = self.calcular_distancia_centros()
-
                     while diferencias:
                         self.clear()
                         self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
-                                              max_alto=max_alto)
+                                            max_alto=max_alto)
                         horizontal = self.calcular_distancia_horizontal()
                         diferencia_horizontal_tanda1 = horizontal[0]
                         diferencia_horizontal_tanda2 = horizontal[1]
                         vertical = self.calcular_distancia_vertical()
                         diferencia_vertical_tanda1 = vertical[0]
                         diferencia_vertical_tanda2 = vertical[1]
-
-                        if ((diferencia_horizontal_tanda1 <= 6 or
-                                diferencia_horizontal_tanda2 <= 6) and
-                                (diferencia_vertical_tanda1 <= 6 or
-                                diferencia_vertical_tanda2 <= 6)
-                        ):
+                        if (diferencia_horizontal_tanda1 < 6 and  diferencia_horizontal_tanda2 < 6 and diferencia_vertical_tanda1 < 6 and diferencia_vertical_tanda2 < 6):
                             diferencias = False
 
+                    
                 area = max(self.calcular_superficies())
 
 
@@ -123,10 +119,10 @@ class Impactos(list):
             diferencias = True
             centros = 100
 
-            while centros >= 4:
+            while centros > 4:
                 self.clear()
                 self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
-                                          max_alto=max_alto)
+                                          max_alto=24)
                 centros = self.calcular_distancia_centros()
 
                 while diferencias:
@@ -140,10 +136,10 @@ class Impactos(list):
                     diferencia_vertical_tanda1 = vertical[0]
                     diferencia_vertical_tanda2 = vertical[1]
 
-                    if ((diferencia_horizontal_tanda1 >= 6 or
-                        diferencia_horizontal_tanda2 >= 6) and
-                        (diferencia_vertical_tanda1 >= 6 or
-                        diferencia_vertical_tanda2 >= 6)
+                    if (diferencia_horizontal_tanda1 > 6 and
+                        diferencia_horizontal_tanda2 > 6 and
+                        diferencia_vertical_tanda1 > 6 and
+                        diferencia_vertical_tanda2 > 6
                     ):
                         diferencias = False
 
@@ -153,39 +149,34 @@ class Impactos(list):
             centros = 100
             diferencias = True
 
-            while centros >= 4:
+            while centros > 4:
+
                 self.clear()
                 self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
                                       max_alto=max_alto)
                 centros = self.calcular_distancia_centros()
 
+
                 while diferencias:
                     self.clear()
                     self.generar_disparos(min_ancho=min_ancho, max_ancho=max_ancho, min_alto=min_alto,
-                                          max_alto=max_alto)
+                                            max_alto=max_alto)
                     horizontal = self.calcular_distancia_horizontal()
                     diferencia_horizontal_tanda1 = horizontal[0]
                     diferencia_horizontal_tanda2 = horizontal[1]
                     vertical = self.calcular_distancia_vertical()
                     diferencia_vertical_tanda1 = vertical[0]
                     diferencia_vertical_tanda2 = vertical[1]
+                    
 
-                    if ((diferencia_horizontal_tanda1 < 6 and
+                    if (diferencia_horizontal_tanda1 < 6 and
                          diferencia_vertical_tanda1 > 6 and
                          diferencia_horizontal_tanda2 < 6 and
-                         diferencia_vertical_tanda2 < 6)
-                            or
-                        (diferencia_horizontal_tanda1 < 6 and
-                         diferencia_vertical_tanda1 < 6 and
-                         diferencia_horizontal_tanda2 < 6 and
-                         diferencia_vertical_tanda2 > 6)
-                            or
-                        (diferencia_horizontal_tanda1 < 6 and
-                        diferencia_vertical_tanda1 > 6 and
-                        diferencia_horizontal_tanda2 < 6 and
-                        diferencia_vertical_tanda2 > 6)
+                         diferencia_vertical_tanda2 > 6
                     ):
                         diferencias = False
+                            
+                        
 
 
 
@@ -210,21 +201,10 @@ class Impactos(list):
                     vertical = self.calcular_distancia_vertical()
                     diferencia_vertical_tanda1 = vertical[0]
                     diferencia_vertical_tanda2 = vertical[1]
-
-                    if ((diferencia_horizontal_tanda1 > 6 and
-                         diferencia_vertical_tanda1 < 6 and
-                         diferencia_horizontal_tanda2 < 6 and
-                         diferencia_vertical_tanda2 < 6)
-                            or
-                        (diferencia_horizontal_tanda1 < 6 and
+                    if (diferencia_horizontal_tanda1 > 6 and
                          diferencia_vertical_tanda1 < 6 and
                          diferencia_horizontal_tanda2 > 6 and
-                         diferencia_vertical_tanda2 < 6)
-                            or
-                        (diferencia_horizontal_tanda1 > 6 and
-                        diferencia_vertical_tanda1 < 6 and
-                        diferencia_horizontal_tanda2 > 6 and
-                        diferencia_vertical_tanda2 < 6)
+                         diferencia_vertical_tanda2 < 6
                     ):
                         diferencias = False
 
@@ -336,16 +316,17 @@ class Impactos(list):
         diferencia_tanda1 = max_y_tanda1 - min_y_tanda1
 
         tiro1_tanda2 = coord_tanda_2[0]
-        y_tiro1_tanda2 = tiro1_tanda2[0]
+        y_tiro1_tanda2 = tiro1_tanda2[1]
 
         tiro2_tanda2 = coord_tanda_2[1]
-        y_tiro2_tanda2 = tiro2_tanda2[0]
+        y_tiro2_tanda2 = tiro2_tanda2[1]
 
         tiro3_tanda2 = coord_tanda_2[2]
-        y_tiro3_tanda2 = tiro3_tanda2[0]
-
+        y_tiro3_tanda2 = tiro3_tanda2[1]
+        #print(f'y_tiro1_tanda2, y_tiro2_tanda2, y_tiro3_tanda2 ------- {y_tiro1_tanda2},{y_tiro2_tanda2},{ y_tiro3_tanda2}')
         max_y_tanda2 = max(y_tiro1_tanda2, y_tiro2_tanda2, y_tiro3_tanda2)
         min_y_tanda2 = min(y_tiro1_tanda2, y_tiro2_tanda2, y_tiro3_tanda2)
+        #print(f'max_y_tanda2 - min_y_tanda2 {max_y_tanda2} - {min_y_tanda2}')
         diferencia_tanda2 = max_y_tanda2 - min_y_tanda2
 
         diferencia_vertical = diferencia_tanda1, diferencia_tanda2
@@ -415,7 +396,6 @@ class Impactos(list):
             tiro1_tanda2 = coord_tanda_1[0]
             tiro2_tanda2 = coord_tanda_1[1]
             tiro3_tanda2 = coord_tanda_1[2]
-
             superficies = superficie_triangulo(coord_tanda_1), superficie_triangulo(coord_tanda_2)
             return superficies
 
