@@ -14,21 +14,25 @@ from blancos_reales import blancoA as blanco1
 if __name__ == "__main__":
     tirador = tirador.Tirador()
     clasificacion = []
-    CANT_DATOS = 75000
+    CANT_DATOS = 60000
     i=0
+   
+
+    CANT_PRUEBA = 1
     for _ in tqdm(range(15000)):
         tirador.tirar(min_ancho=0, max_ancho=6, min_alto=0, max_alto=6)
         clasificacion.append(1) # Lo clasificamos como 1 "Aprobado"
-        tirador.tirar_mal_error_punteria(min_ancho=18, max_ancho=24, min_alto=18, max_alto=24)
-        clasificacion.append(5)
+        #tirador.tirar_mal_error_punteria(min_ancho=0, max_ancho=24, min_alto=0, max_alto=24)
+        #clasificacion.append(5)
         tirador.tirar_mal_tironeo(min_ancho=0, max_ancho=24, min_alto=0, max_alto=24)
         clasificacion.append(2)
-        tirador.tirar_mal_control_respiracion(min_ancho=18, max_ancho=24, min_alto=0, max_alto=24)
+        tirador.tirar_mal_control_respiracion(min_ancho=0, max_ancho=24, min_alto=0, max_alto=24)
         clasificacion.append(3)
         tirador.tirar_mal_posicion_inestable(min_ancho=0, max_ancho=24, min_alto=18, max_alto=28)
         clasificacion.append(4)
         # Lo clasificamos como 0 "Desaprobado"
         i = i+1
+    
 
     # Metemos los datos en numpy arrays y los acomodamos
     matriz_datos = np.array(tirador.get_datos(), dtype=float)
@@ -37,6 +41,7 @@ if __name__ == "__main__":
     # Aplanamos los datos
     matriz_datos= matriz_datos.reshape(CANT_DATOS, 28 * 24)
     # Creamos el perceptron y lo entrenamos
+    
     inicio = time.time()
     clf = MLPClassifier(solver='adam', activation="tanh",max_iter=1200, random_state=4,
                         hidden_layer_sizes=(972//6,972//9,972//12), verbose=True)
@@ -53,7 +58,7 @@ if __name__ == "__main__":
     print("PRUEBA BUENA")
     for _ in range(CANT_PRUEBA):
         tirador.tirar(min_ancho=0, max_alto=6, min_alto=0, max_ancho=6)
-        #tirador.guardar_blancos(foldername='buena')
+        tirador.guardar_blancos(foldername='buena')
         prueba = tirador.get_datos()
     matriz_prueba = np.array(prueba, dtype=float)
     matriz_prueba = matriz_prueba.reshape(CANT_PRUEBA, 28 * 24)
@@ -62,28 +67,14 @@ if __name__ == "__main__":
     tirador.descartar_blancos()
 
 
-    #PRUEBA DE ERROR DE PUNTERIA
-    print("PRUEBA DE ERROR DE PUNTERIA")
-    i = 0
-    for _ in range(CANT_PRUEBA):
-        i+1
-        tirador.tirar_mal_error_punteria(min_ancho=18, max_ancho=24, min_alto=18, max_alto=24)
-        prueba = tirador.get_datos()
 
-    matriz_prueba = np.array(prueba, dtype=float)
-    matriz_prueba = matriz_prueba.reshape(CANT_PRUEBA, 28 * 24)
-    list = clf.predict(matriz_prueba).tolist()  
-    print(f'Acertó {list.count(5.0)}  de {CANT_PRUEBA} blancos desaprobados por error de punteria.')
-
-
-    tirador.descartar_blancos()
-    
+  
 
     #PRUEBA DE TIRONEO
     print("PRUEBA DE TIRONEO")
     for _ in range(CANT_PRUEBA):
         tirador.tirar_mal_tironeo(min_ancho=0, max_ancho=24, min_alto=0, max_alto=24)
-        #tirador.guardar_blancos(foldername='tironeo')
+        tirador.guardar_blancos(foldername='tironeo')
         prueba = tirador.get_datos()
 
     matriz_prueba = np.array(prueba, dtype=float)
@@ -99,7 +90,7 @@ if __name__ == "__main__":
     print("PRUEBA MAL RESPIRACION")
     for _ in range(CANT_PRUEBA):
         tirador.tirar_mal_control_respiracion(min_ancho=18, max_ancho=24, min_alto=0, max_alto=24)
-        #tirador.guardar_blancos(foldername='respiracion')
+        tirador.guardar_blancos(foldername='respiracion')
         prueba = tirador.get_datos()
     matriz_prueba = np.array(prueba, dtype=float)
     matriz_prueba = matriz_prueba.reshape(CANT_PRUEBA, 28 * 24)
@@ -112,7 +103,7 @@ if __name__ == "__main__":
     print("PRUEBA INESTABLE")
     for _ in range(CANT_PRUEBA):
         tirador.tirar_mal_posicion_inestable(min_ancho=0, max_ancho=24, min_alto=18, max_alto=28)
-        #tirador.guardar_blancos(foldername='inestable')
+        tirador.guardar_blancos(foldername='inestable')
         prueba = tirador.get_datos()
 
     matriz_prueba = np.array(prueba, dtype=float)
@@ -120,7 +111,20 @@ if __name__ == "__main__":
     list = clf.predict(matriz_prueba).tolist()    
     print(f'Acertó {list.count(4.0)}  de {CANT_PRUEBA} blancos desaprobados por inestabilidad')
     tirador.descartar_blancos()
+    
+    print("CASO REAL")
+    ##CASO DE PRUEBA REAL
+    from blancos_reales import *
+    from plot_disparos import heatmap, FILAS, COLUMNAS
+    heatmap(blancoD, FILAS, COLUMNAS)
+    blancoD = np.array(blancoD, dtype=float)
+    blancoD = blancoD.reshape(1, 28 * 24)
 
+    print(clf.predict(blancoD))
+    print(clf.predict(blancoD))
+    print(clf.predict(blancoD))
+    print(clf.predict(blancoD))
+    print(clf.predict(blancoD))
 
     fin = time.time()
     tiempo_total = fin - inicio

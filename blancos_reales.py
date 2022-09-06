@@ -51,10 +51,10 @@ blancoC[21][16] = 1
 blancoD = np.zeros((28, 24))
 blancoD[5][7] = -1
 blancoD[11][10] = -1
-blancoD[22][3] = -1
+blancoD[22][7] = -1
 
 blancoD[6][9] = 1
-blancoD[14][3] = 1
+blancoD[14][7] = 1
 blancoD[20][10] = 1
 
 
